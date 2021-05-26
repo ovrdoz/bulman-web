@@ -1,25 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import './App.css';
+import React from 'react';
+import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Container from '@material-ui/core/Container';
+import NavBar from './components/ui/NavBar';
+import Home from './components/pages/Home';
+import Projects from './components/pages/Projects';
+import Scenarios from './components/pages/Scenarios';
+import { Toolbar } from '@material-ui/core';
+
+const theme = createMuiTheme({
+  palette: {
+    type: "dark"
+  }
+});
+
+function ElevationScroll(props) {
+  const { children, window } = props;
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 0,
+    target: window ? window() : undefined,
+  });
+
+  return React.cloneElement(children, {
+    elevation: trigger ? 4 : 0,
+  });
+}
+
+function App(props) {
   return (
+    <ThemeProvider theme={theme}>
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ElevationScroll {...props}>
+        <NavBar />
+      </ElevationScroll>
+      <Toolbar />
+      <Container maxWidth="lg">
+        <BrowserRouter>
+            <Switch>
+              <Route exact path="/" render={() => <Home />} />
+              <Route path="/projects" render={() => <Projects />} />
+              <Route path="/scenarios" render={() => <Scenarios />} />
+            </Switch>
+          </BrowserRouter>
+      </Container>
+
     </div>
+
+    </ThemeProvider>
   );
 }
 
